@@ -1,0 +1,115 @@
+Nagios – Docker
+# Pull Nagios image
+docker pull jasonrivers/nagios:latest
+
+# Run Nagios container
+docker run -d --name nagios -p 8081:80 jasonrivers/nagios:latest
+
+# Check running containers
+docker ps
+
+Docker Compose – Flask + Nginx + Nagios
+
+services:
+  flask:
+    image: python:3.9
+    container_name: hospital-api
+    ports:
+      - "5000:5000"
+    command: python app.py
+    networks:
+      - hospital-net
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: hospital-web
+    ports:
+      - "8080:80"
+    networks:
+      - hospital-net
+    restart: unless-stopped
+
+  nagios:
+    image: jasonrivers/nagios:latest
+    container_name: hospital-nagios
+    ports:
+      - "8081:80"
+    networks:
+      - hospital-net
+    restart: unless-stopped
+
+networks:
+  hospital-net:
+    driver: bridge
+# Start containers
+docker compose up -d
+
+# Check containers
+docker compose ps
+
+# Stop containers
+docker compose stop
+
+# Start stopped containers
+docker compose start
+
+# Restart containers
+docker compose restart
+
+# Remove containers and network
+docker compose down
+
+Docker Compose – MySQL + Volume + Network
+# Pull MySQL image
+docker pull mysql:8.0
+
+# Create network
+docker network create library-net
+
+# Create volume
+docker volume create mysql-data
+
+# Run MySQL container
+docker run -d \
+  --name library-db \
+  --network library-net \
+  -e MYSQL_ROOT_PASSWORD=root123 \
+  -v mysql-data:/var/lib/mysql \
+  mysql:8.0
+
+docker stop library-db
+docker start library-db
+docker restart library-db
+
+KUb-
+Start Minikube
+minikube start
+
+
+Create deployment
+kubectl create deployment lib-app --image=nginx
+
+
+Check pods
+kubectl get pods
+
+
+Expose deployment
+kubectl expose deployment lib-app --type=NodePort --port=80
+
+
+Check services
+kubectl get services
+
+
+Open service
+minikube service lib-app
+
+
+Scale deployment
+kubectl scale deployment lib-app --replicas=5
+
+
+Delete a pod
+kubectl delete pod POD_NAME
